@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vocabulary Quiz – Set 2 Story Mobile</title>
+<title>Vocabulary Quiz 2 – Fill in the Blanks</title>
 
 <style>
 body {
@@ -79,7 +79,7 @@ select {
 
 <body>
 
-<h3>Fill in the blanks (choose the correct word)</h3>
+<h3>Vocabulary Quiz 2 – Fill in the Blanks</h3>
 
 <div>
 
@@ -173,6 +173,16 @@ to publish her story without any legal issues.
 <div id="result"></div>
 
 <script>
+/* RANDOMIZE OPTIONS ON LOAD */
+document.querySelectorAll("select").forEach(select => {
+  const options = Array.from(select.options).slice(1);
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  options.forEach(opt => select.appendChild(opt));
+});
+
 function checkAnswers() {
   let score = 0;
   let total = 0;
