@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Quiz 6 – Fill in the Blanks</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 30px auto;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.sentence {
+  display: inline;
+  word-wrap: break-word;
+}
+
+select {
+  margin: 0 4px;
+  padding: 5px 4px;
+  font-size: 16px;
+  min-width: 110px;
+}
+
+.correct {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.wrong {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+#checkBtn {
+  display: block;
+  margin: 25px auto;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+#result {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+    margin: 15px;
+  }
+
+  select {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 3px 4px;
+    margin: 0 2px;
+    min-width: 90px;
+  }
+
+  #checkBtn {
+    width: 100%;
+    font-size: 20px;
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Vocabulary Quiz 6 – Words 51 to 60</h3>
+
+<!-- TOP INDEX LINK -->
+<div style="margin-bottom:15px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #1a73e8;
+    font-size: 16px;
+    font-weight: bold;
+  ">⬅ Back to Index</a>
+</div>
+
+<div>
+<span class="sentence">
+The new student appeared unusually (obedient and submissive)
+<select data-answer="docile">
+  <option value="">---</option>
+  <option>docile</option>
+  <option>vindictive</option>
+  <option>furtive</option>
+  <option>arbitrary</option>
+</select>
+in class, never questioning instructions. However, the passage of time proved (unstoppable)
+<select data-answer="inexorable">
+  <option value="">---</option>
+  <option>inexorable</option>
+  <option>genially</option>
+  <option>gambol</option>
+  <option>derided</option>
+</select>,
+and attitudes slowly changed. A few classmates grew openly (revengeful)
+<select data-answer="vindictive">
+  <option value="">---</option>
+  <option>vindictive</option>
+  <option>docile</option>
+  <option>repudiate</option>
+  <option>quailed</option>
+</select>
+when their mistakes were exposed. The shy boy was often (mocked)
+<select data-answer="derided">
+  <option value="">---</option>
+  <option>derided</option>
+  <option>gambol</option>
+  <option>genially</option>
+  <option>furtive</option>
+</select>
+by others, while younger children continued to (play happily)
+<select data-answer="gambol">
+  <option value="">---</option>
+  <option>gambol</option>
+  <option>repudiate</option>
+  <option>vindictive</option>
+  <option>arbitrary</option>
+</select>
+in the playground. When confronted by authority, even the boldest students (lost courage)
+<select data-answer="quailed">
+  <option value="">---</option>
+  <option>quailed</option>
+  <option>genially</option>
+  <option>docile</option>
+  <option>derided</option>
+</select>.
+Some exchanged (secretive)
+<select data-answer="furtive">
+  <option value="">---</option>
+  <option>furtive</option>
+  <option>gambol</option>
+  <option>inexorable</option>
+  <option>vindictive</option>
+</select>
+glances, while the teacher spoke (kindly)
+<select data-answer="genially">
+  <option value="">---</option>
+  <option>genially</option>
+  <option>arbitrary</option>
+  <option>repudiate</option>
+  <option>quailed</option>
+</select>
+to restore calm. Later, the principal chose to (reject)
+<select data-answer="repudiate">
+  <option value="">---</option>
+  <option>repudiate</option>
+  <option>docile</option>
+  <option>gambol</option>
+  <option>derided</option>
+</select>
+the unfair accusations entirely, warning that decisions must never be (random or unreasonable)
+<select data-answer="arbitrary">
+  <option value="">---</option>
+  <option>arbitrary</option>
+  <option>genially</option>
+  <option>furtive</option>
+  <option>inexorable</option>
+</select>.
+</span>
+</div>
+
+<button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+<div id="result"></div>
+
+<script>
+/* RANDOMIZE OPTIONS ON LOAD */
+document.querySelectorAll("select").forEach(select => {
+  const options = Array.from(select.options).slice(1);
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  options.forEach(opt => select.appendChild(opt));
+});
+
+function checkAnswers() {
+  let score = 0;
+  let total = 0;
+
+  document.querySelectorAll("select[data-answer]").forEach(sel => {
+    total++;
+    if (sel.value.trim() === sel.dataset.answer) {
+      sel.className = "correct";
+      score++;
+    } else {
+      sel.className = "wrong";
+    }
+  });
+
+  document.getElementById("result").innerText =
+    "Score: " + score + " / " + total;
+}
+</script>
+
+<!-- BOTTOM INDEX LINK -->
+<div style="text-align:center; margin-bottom:20px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #1a73e8;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    display: inline-block;
+  ">⬅ Back to Index</a>
+</div>
+
+</body>
+</html>
