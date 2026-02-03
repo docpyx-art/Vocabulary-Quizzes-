@@ -59,7 +59,7 @@ select {
   }
 
   select {
-    display: inline-block; 
+    display: inline-block;
     width: auto;
     font-size: 15px;
     padding: 3px 4px;
@@ -77,6 +77,16 @@ select {
 </head>
 
 <body>
+
+<!-- TOP INDEX LINK -->
+<div style="margin-bottom:15px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #1a73e8;
+    font-size: 16px;
+    font-weight: bold;
+  ">⬅ Back to Index</a>
+</div>
 
 <h3>Vocabulary Quiz 1 – Fill in the Blanks</h3>
 
@@ -182,7 +192,7 @@ function shuffleOptions(select) {
 
 document.querySelectorAll("select[data-answer]").forEach(shuffleOptions);
 
-/* ✅ EXISTING CHECK LOGIC – UNCHANGED */
+/* ✅ CHECK ANSWERS */
 function checkAnswers() {
   let score = 0;
   let total = 0;
@@ -202,6 +212,7 @@ function checkAnswers() {
 }
 </script>
 
+<!-- BOTTOM INDEX LINK -->
 <div style="text-align:center; margin-bottom:20px;">
   <a href="index.html" style="
     text-decoration: none;
