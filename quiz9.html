@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Quiz 9 – Fill in the Blanks</title>
+
+<style>
+body {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  max-width: 900px;
+  margin: 30px auto;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.sentence {
+  display: inline;
+  word-wrap: break-word;
+}
+
+select {
+  margin: 0 4px;
+  padding: 5px 4px;
+  font-size: 16px;
+  min-width: 110px;
+}
+
+.correct {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.wrong {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+#checkBtn {
+  display: block;
+  margin: 25px auto;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+#result {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+    margin: 15px;
+  }
+
+  select {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 3px 4px;
+    margin: 0 2px;
+    min-width: 90px;
+  }
+
+  #checkBtn {
+    width: 100%;
+    font-size: 20px;
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Vocabulary Quiz 9 – Words 81 to 90</h3>
+
+<!-- TOP INDEX LINK -->
+<div style="margin-bottom:15px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #1a73e8;
+    font-size: 16px;
+    font-weight: bold;
+  ">⬅ Back to Index</a>
+</div>
+
+<div>
+<span class="sentence">
+The young musician’s remarkable (exceptional skill)
+<select data-answer="virtuosity">
+  <option value="">---</option>
+  <option>virtuosity</option>
+  <option>fecundity</option>
+  <option>persiflage</option>
+  <option>demur</option>
+</select>
+led many to believe he was almost (incapable of error)
+<select data-answer="infallible">
+  <option value="">---</option>
+  <option>infallible</option>
+  <option>febrile</option>
+  <option>impugn</option>
+  <option>prosaically</option>
+</select>,
+though he himself spoke (plainly and unimaginatively)
+<select data-answer="prosaically">
+  <option value="">---</option>
+  <option>prosaically</option>
+  <option>exult</option>
+  <option>persiflage</option>
+  <option>fecundity</option>
+</select>
+about his success. During performances, a (feverish)
+<select data-answer="febrile">
+  <option value="">---</option>
+  <option>febrile</option>
+  <option>infallible</option>
+  <option>eschew</option>
+  <option>demur</option>
+</select>
+energy filled the hall, yet he would often (raise objections)
+<select data-answer="demur">
+  <option value="">---</option>
+  <option>demur</option>
+  <option>impugn</option>
+  <option>exult</option>
+  <option>fecundity</option>
+</select>
+when critics reduced serious art to mere (light mockery)
+<select data-answer="persiflage">
+  <option value="">---</option>
+  <option>persiflage</option>
+  <option>virtuosity</option>
+  <option>febrile</option>
+  <option>eschew</option>
+</select>.
+Instead, he chose to (rejoice openly)
+<select data-answer="exult">
+  <option value="">---</option>
+  <option>exult</option>
+  <option>demur</option>
+  <option>impugn</option>
+  <option>prosaically</option>
+</select>
+in the creative (fruitfulness)
+<select data-answer="fecundity">
+  <option value="">---</option>
+  <option>fecundity</option>
+  <option>virtuosity</option>
+  <option>febrile</option>
+  <option>infallible</option>
+</select>
+of his work, deliberately choosing to (avoid)
+<select data-answer="eschew">
+  <option value="">---</option>
+  <option>eschew</option>
+  <option>impugn</option>
+  <option>demur</option>
+  <option>exult</option>
+</select>
+petty rivalries. Even so, some detractors continued to (question the integrity of)
+<select data-answer="impugn">
+  <option value="">---</option>
+  <option>impugn</option>
+  <option>persiflage</option>
+  <option>fecundity</option>
+  <option>prosaically</option>
+</select>
+his motives, unable to accept his steady rise.
+</span>
+</div>
+
+<button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+<div id="result"></div>
+
+<script>
+/* RANDOMIZE OPTIONS ON LOAD */
+document.querySelectorAll("select").forEach(select => {
+  const options = Array.from(select.options).slice(1);
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  options.forEach(opt => select.appendChild(opt));
+});
+
+function checkAnswers() {
+  let score = 0;
+  let total = 0;
+
+  document.querySelectorAll("select[data-answer]").forEach(sel => {
+    total++;
+    if (sel.value.trim() === sel.dataset.answer) {
+      sel.className = "correct";
+      score++;
+    } else {
+      sel.className = "wrong";
+    }
+  });
+
+  document.getElementById("result").innerText =
+    "Score: " + score + " / " + total;
+}
+</script>
+
+<!-- BOTTOM INDEX LINK -->
+<div style="text-align:center; margin-bottom:20px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #1a73e8;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    display: inline-block;
+  ">⬅ Back to Index</a>
+</div>
+
+</body>
+</html>
