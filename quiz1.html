@@ -78,7 +78,9 @@ select {
 
 <body>
 
-<!-- TOP INDEX LINK -->
+<h3>Vocabulary Quiz 1 – Fill in the Blanks</h3>
+
+<!-- TOP INDEX LINK (AFTER TITLE) -->
 <div style="margin-bottom:15px;">
   <a href="index.html" style="
     text-decoration: none;
@@ -87,8 +89,6 @@ select {
     font-weight: bold;
   ">⬅ Back to Index</a>
 </div>
-
-<h3>Vocabulary Quiz 1 – Fill in the Blanks</h3>
 
 <div>
 <span class="sentence">
@@ -180,7 +180,6 @@ at times, but it taught him lessons he would never forget.
 <div id="result"></div>
 
 <script>
-/* 🔀 RANDOMIZE DROPDOWN OPTIONS ON LOAD */
 function shuffleOptions(select) {
   const opts = Array.from(select.options).slice(1);
   for (let i = opts.length - 1; i > 0; i--) {
@@ -192,7 +191,6 @@ function shuffleOptions(select) {
 
 document.querySelectorAll("select[data-answer]").forEach(shuffleOptions);
 
-/* ✅ CHECK ANSWERS */
 function checkAnswers() {
   let score = 0;
   let total = 0;
@@ -222,7 +220,6 @@ function checkAnswers() {
     border-radius: 6px;
     font-size: 16px;
     display: inline-block;
-    transition: 0.3s;
   ">⬅ Back to Index</a>
 </div>
 
