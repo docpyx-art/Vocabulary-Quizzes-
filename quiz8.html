@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Quiz 8 – Fill in the Blanks</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 30px auto;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.sentence {
+  display: inline;
+  word-wrap: break-word;
+}
+
+select {
+  margin: 0 4px;
+  padding: 5px 4px;
+  font-size: 16px;
+  min-width: 110px;
+}
+
+.correct {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.wrong {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+#checkBtn {
+  display: block;
+  margin: 25px auto;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+#result {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+    margin: 15px;
+  }
+
+  select {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 3px 4px;
+    margin: 0 2px;
+    min-width: 90px;
+  }
+
+  #checkBtn {
+    width: 100%;
+    font-size: 20px;
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Vocabulary Quiz 8 – Words 71 to 80</h3>
+
+<!-- TOP INDEX LINK -->
+<div style="margin-bottom:15px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #1a73e8;
+    font-size: 16px;
+    font-weight: bold;
+  ">⬅ Back to Index</a>
+</div>
+
+<div>
+<span class="sentence">
+The leader believed his actions would be remembered by (future generations)
+<select data-answer="posterity">
+  <option value="">---</option>
+  <option>posterity</option>
+  <option>lassitude</option>
+  <option>incredulous</option>
+  <option>malignant</option>
+</select>,
+yet critics argued that his constant efforts to (lower in value)
+<select data-answer="debase">
+  <option value="">---</option>
+  <option>debase</option>
+  <option>extricate</option>
+  <option>exaltation</option>
+  <option>reconnoitring</option>
+</select>
+traditions were (out of place)
+<select data-answer="incongruous">
+  <option value="">---</option>
+  <option>incongruous</option>
+  <option>insatiable</option>
+  <option>malignant</option>
+  <option>lassitude</option>
+</select>
+with the values he claimed to uphold. Before making any announcement, officials spent days (surveying secretly)
+<select data-answer="reconnoitring">
+  <option value="">---</option>
+  <option>reconnoitring</option>
+  <option>extricate</option>
+  <option>debase</option>
+  <option>posterity</option>
+</select>
+the situation, hoping for a moment of (great joy)
+<select data-answer="exaltation">
+  <option value="">---</option>
+  <option>exaltation</option>
+  <option>lassitude</option>
+  <option>malignant</option>
+  <option>incredulous</option>
+</select>.
+However, prolonged stress led to deep (physical and mental weariness)
+<select data-answer="lassitude">
+  <option value="">---</option>
+  <option>lassitude</option>
+  <option>insatiable</option>
+  <option>posterity</option>
+  <option>reconnoitring</option>
+</select>,
+while a few (harmful)
+<select data-answer="malignant">
+  <option value="">---</option>
+  <option>malignant</option>
+  <option>incongruous</option>
+  <option>exaltation</option>
+  <option>extricate</option>
+</select>
+voices spread rumors driven by an (unquenchable)
+<select data-answer="insatiable">
+  <option value="">---</option>
+  <option>insatiable</option>
+  <option>lassitude</option>
+  <option>incredulous</option>
+  <option>debase</option>
+</select>
+desire for power. The leader struggled to (free)
+<select data-answer="extricate">
+  <option value="">---</option>
+  <option>extricate</option>
+  <option>reconnoitring</option>
+  <option>malignant</option>
+  <option>posterity</option>
+</select>
+himself from the chaos, as citizens remained (unwilling to believe)
+<select data-answer="incredulous">
+  <option value="">---</option>
+  <option>incredulous</option>
+  <option>exaltation</option>
+  <option>insatiable</option>
+  <option>lassitude</option>
+</select>
+that peace could be restored so easily.
+</span>
+</div>
+
+<button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+<div id="result"></div>
+
+<script>
+/* RANDOMIZE OPTIONS ON LOAD */
+document.querySelectorAll("select").forEach(select => {
+  const options = Array.from(select.options).slice(1);
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  options.forEach(opt => select.appendChild(opt));
+});
+
+function checkAnswers() {
+  let score = 0;
+  let total = 0;
+
+  document.querySelectorAll("select[data-answer]").forEach(sel => {
+    total++;
+    if (sel.value.trim() === sel.dataset.answer) {
+      sel.className = "correct";
+      score++;
+    } else {
+      sel.className = "wrong";
+    }
+  });
+
+  document.getElementById("result").innerText =
+    "Score: " + score + " / " + total;
+}
+</script>
+
+<!-- BOTTOM INDEX LINK -->
+<div style="text-align:center; margin-bottom:20px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #1a73e8;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    display: inline-block;
+  ">⬅ Back to Index</a>
+</div>
+
+</body>
+</html>
