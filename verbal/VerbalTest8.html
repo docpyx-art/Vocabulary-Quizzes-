@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Test 8 – Verbal</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  padding-bottom: 100px; /* FIX: space for bottom bar */
+}
+
+.top-bar {
+  padding: 12px 20px;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.left, .right {
+  width: 50%;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.divider {
+  width: 1px;
+  background: #ccc;
+  height: calc(100vh - 60px);
+}
+
+.passage {
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.qbox {
+  padding: 6px 14px;
+  border: 2px solid #000;
+  display: inline-block;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.options label {
+  display: block;
+  margin: 10px 0;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.correct { background: #d4edda; }
+.incorrect { background: #f8d7da; }
+
+/* Bottom bar */
+.bottom-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  background: #2f3e46;
+  padding: 10px 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  color: #fff;
+  gap: 10px;
+}
+
+button {
+  padding: 9px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.btn-answer { background: #3a5a98; }
+.btn-nav { background: #556d98; }
+
+/* Question panel */
+.qpanelCollapsed {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  cursor: pointer;
+  background: #ff6f61;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  z-index: 11;
+  font-size: 13px;
+}
+
+.qpanelExpanded {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  max-width: 800px;
+  overflow-y: auto;
+  font-size: 14px;
+  text-align: center;
+  z-index: 10;
+  max-height: 300px;
+}
+
+.qgrid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.qnum-box {
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  font-weight: bold;
+}
+
+.qnum-box.attempted { background: #ff6f61; }
+.qnum-box:hover { opacity: 0.8; }
+
+/* === Mobile-Friendly Adjustments === */
+@media (max-width: 768px) {
+  body { padding-bottom: 180px; } /* FIX: taller bottom bar on mobile */
+
+  .container { flex-direction: column; }
+
+  .left, .right {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .divider { display: none; }
+
+  .bottom-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .btn-answer, .btn-nav {
+    width: 100%;
+    text-align: center;
+  }
+
+  .qpanelCollapsed {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .qpanelExpanded {
+    max-height: 250px;
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .qgrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+
+  .qnum-box {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .passage { font-size: 15px; }
+  #stem { font-size: 15px; }
+  #options label { font-size: 14px; }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Extra-small screens */
+@media only screen and (max-width: 600px) {
+  .container { flex-direction: column; }
+  .left, .right { width: 100%; padding: 20px; }
+  .divider { display: none; }
+
+  .bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  #qpanelCollapsed {
+    left: 10px;
+    bottom: 80px;
+    transform: none;
+    font-size: 12px;
+  }
+
+  #qpanelExpanded {
+    left: 10px;
+    bottom: 120px;
+    transform: none;
+    max-width: calc(100% - 20px);
+    font-size: 13px;
+    max-height: 250px;
+  }
+
+  .qgrid { grid-template-columns: repeat(4, 1fr); }
+  .qnum-box { padding: 6px; font-size: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">Test 8 – Verbal</div>
+
+<div class="container">
+  <div class="left">
+    <div id="passage" class="passage"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="right">
+    <div id="qnumBox" class="qbox"></div>
+    <div id="stem"></div>
+    <div id="options" class="options"></div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <button id="answerBtn" class="btn-answer">Show Correct Answer</button>
+  <button id="prevBtn" class="btn-nav">Previous</button>
+  <button id="nextBtn" class="btn-nav">Next</button>
+  <button id="reviewBtn" class="btn-nav" style="background:#28a745;">Go to Review</button>
+</div>
+
+<div id="qpanel">
+  <div id="qpanelCollapsed" class="qpanelCollapsed">
+    <span id="currentQuestionLabel">Question 0 of 0</span>
+    <span id="toggleArrow" style="margin-left:6px;">▲</span>
+  </div>
+  <div id="qpanelExpanded" class="qpanelExpanded">
+    <div id="qgrid" class="qgrid"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+
+{
+  num: 219,
+  passage: `The following text is adapted from Upton Sinclair’s 1906 novel <i>The Jungle</i>. Marija is helping to manage her sister’s wedding.<br><br>
+It was [Marija’s] task to see that all things went in due form, and after the best home traditions; and, flying wildly hither and thither, bowling every one out of the way, and scolding and exhorting all day with her tremendous voice, Marija was too eager to see that others conformed to the proprieties to <u>consider</u> them herself.`,
+
+  stem: `As used in the text, what does the word “consider” most nearly mean?`,
+  options: {
+    A: 'Take into account and follow',
+    B: 'Admire steadily and praise',
+    C: 'Come to a decision about',
+    D: 'Have an opinion on'
+  },
+  answer: 'A',
+  img: null
+},
+
+{
+  num: 220,
+  passage: `To develop a method for measuring snow depth with laser beams, NASA physicist Yongxiang Hu relied on ______; identifying broad similarities between two seemingly different phenomena, Hu used information about how ants move inside colonies to calculate how the particles of light that make up laser beams travel through snow.`,
+  stem: `Which choice completes the text with the most logical and precise word or phrase?`,
+  options: {
+    A: 'a collaboration',
+    B: 'an accessory',
+    C: 'a contradiction',
+    D: 'an analogy'
+  },
+  answer: 'D',
+  img: null
+},
+
+{
+  num: 221,
+  passage: `While scholars believe many Mesoamerican cities influenced each other, direct evidence of such influence is difficult to ascertain. However, recent excavations in a sector of Tikal (Guatemala) unearthed a citadel that shows ______ Teotihuacán (Mexico) architecture—including a near replica of a famed Teotihuacán temple—providing tangible evidence of outside influence in portions of Tikal.`,
+  stem: `Which choice completes the text with the most logical and precise word or phrase?`,
+  options: {
+    A: 'refinements of',
+    B: 'precursors of',
+    C: 'commonalities with',
+    D: 'animosities toward'
+  },
+  answer: 'C',
+  img: null
+},
+
+{
+  num: 222,
+  passage: `Mathematician Claude Shannon is widely regarded as a foundational figure in information theory. His most important paper, “A Mathematical Theory of Communication,” published in 1948 when he was employed at Bell Labs, utilized a concept called a “binary digit” (shortened to “bit”) to measure the amount of information in any signal and determine the fastest rate at which information could be transmitted while still being reliably decipherable. Robert Gallagher, one of Shannon’s colleagues, said that the bit was “[Shannon’s] discovery, and from it the whole communications revolution has sprung.”`,
+  stem: `Which choice best describes the overall structure of the text?`,
+  options: {
+    A: 'It presents a theoretical concept, illustrates how the name of the concept has changed, and shows how the name has entered common usage.',
+    B: 'It introduces a respected researcher, describes an aspect of his work, and suggests why the work is historically significant.',
+    C: 'It names the company where an important mathematician worked, details the mathematician’s career at the company, and provides an example of the recognition he received there.',
+    D: 'It mentions a paper, offers a summary of the paper’s findings, and presents a researcher’s commentary on the paper.'
+  },
+  answer: 'B',
+  img: null
+},
+
+{
+  num: 223,
+  passage: `While researching a topic, a student has taken the following notes:<br><br>
+• African American women played prominent roles in the Civil Rights Movement, including at the famous 1963 March on Washington.<br>
+• Civil rights activist Anna Hedgeman, one of the march’s organizers, was a political adviser who had worked for President Truman.<br>
+• Civil rights activist Daisy Bates was a well-known journalist and advocate for school desegregation.<br>
+• Hedgeman worked behind the scenes to make sure a woman was included in the lineup of speakers at the march.<br>
+• Bates was the sole woman to speak, delivering a brief but memorable address to the cheering crowd.`,
+  stem: `The student wants to compare the two women’s contributions to the March on Washington. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  options: {
+    A: 'Hedgeman and Bates contributed to the march in different ways; Bates, for example, delivered a brief but memorable address.',
+    B: 'Hedgeman worked in politics and helped organize the march, while Bates was a journalist and school desegregation advocate.',
+    C: 'Although Hedgeman worked behind the scenes to make sure a woman speaker was included, Bates was the sole woman to speak at the march.',
+    D: 'Many African American women, including Bates and Hedgeman, fought for civil rights, but only one spoke at the march.'
+  },
+  answer: 'C',
+  img: null
+},
+
+{
+  num: 224,
+  passage: `For years, biologists have experimented with using grime-eating bacteria rather than harsh chemicals to clean artworks, and results have been impressive overall. ______ these bacterial strains—which can metabolize centuries’ worth of oil, glue, dirt, and other surface impurities without creating harmful byproducts—have proven more effective than traditional chemical cleaning methods.`,
+  stem: `Which choice completes the text with the most logical transition?`,
+  options: {
+    A: 'However,',
+    B: 'In many cases,',
+    C: 'As a result,',
+    D: 'Additionally,'
+  },
+  answer: 'B',
+  img: null
+},
+
+{
+  num: 225,
+  passage: `Voting members of the 2002 Latin Grammys were impressed by Banda Cuisillos’s album <i>Puras Rancheras Con Cuisillos</i> and its contribution to the banda genre, a form of regional Mexican music featuring large ensembles of wind instruments and drums that first developed in southern and central Mexico in the mid-nineteenth century. ______ they awarded the group the Best Banda Album award.`,
+  stem: `Which choice completes the text with the most logical transition?`,
+  options: {
+    A: 'In contrast,',
+    B: 'Meanwhile,',
+    C: 'Nevertheless,',
+    D: 'Accordingly,'
+  },
+  answer: 'D',
+  img: null
+},
+
+{
+  num: 226,
+  passage: `While researching a topic, a student has taken the following notes:<br><br>
+• Hina Hanta is an online archive curated by the Choctaw Nation of Oklahoma.<br>
+• Hina Hanta means “bright path” in Choctaw.<br>
+• It features images of cultural artifacts relevant to the history of the Choctaw people.<br>
+• It includes a fanner basket (ufko tapushik in Choctaw) made from cane.<br>
+• It includes a robe (nita anchi) made from bear fur.`,
+  stem: `The student wants to specify the fanner basket’s name in Choctaw. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+  options: {
+    A: 'The Hina Hanta archive features cultural artifacts, such as a fanner basket and a robe, that are relevant to the history of the Choctaw people.',
+    B: 'The cane fanner basket, which is included in the Hina Hanta online archive, is called an ufko tapushik in Choctaw.',
+    C: 'Hina Hanta, which means “bright path” in Choctaw, includes a fanner basket in its archive.',
+    D: 'The name of the online archive Hina Hanta means “bright path” in Choctaw.'
+  },
+  answer: 'B',
+  img: null
+},
+
+{
+  num: 227,
+  passage: `Research suggests that REM sleep in animals is homeostatically regulated: animals compensate for periods of REM sleep deprivation by increasing subsequent REM sleep. When on land, fur seals get enough REM sleep, but during the weeks they’re in the water, they get almost none. In a study of fur seals’ sleep habits, researchers recorded the REM sleep (as a percentage of baseline) of fur seals once they had returned to land. They concluded that REM sleep may not be homeostatically regulated in fur seals, citing as evidence the fact that the seals in the study ______`,
+  stem: `Which choice most effectively uses data from the graph to complete the text?`,
+  options: {
+    A: 'didn’t show significantly less REM sleep during the second day after returning to land than they did during the first day.',
+    B: 'showed no significant differences from one another in baseline levels of REM sleep.',
+    C: 'didn’t consistently demonstrate a significant increase in REM sleep after their period of deprivation in the water.',
+    D: 'showed no significant difference between REM sleep after returning to land and REM sleep while in the water.'
+  },
+  answer: 'C',
+  img: '227.png'
+},
+
+{
+  num: 228,
+  passage: `Urbanization, industrialization, and the warming climate create thermal pollution (excess heat) in the shallow subsurface soil. Susanne A. Benz and colleagues analyzed thousands of sites on three continents under one scenario in which surface temperature remains at the current level and under another in which the surface reaches the maximum plausible temperature. They then categorized each site according to the percentage of local home heating needs that could be met using this excess subsurface heat. The team concluded that if surface temperature approaches the maximum plausible level, the percentage of sites where thermal pollution could feasibly contribute to meeting home heating needs will increase.`,
+  stem: `Which choice best describes data in the graph that support Benz and colleagues’ conclusion?`,
+  options: {
+    A: 'Under both temperature conditions, less than 10% of sites were in the up-to-25% group, but at the maximum plausible surface temperature, almost 80% of sites could have all their local heating needs met by thermal pollution.',
+    B: 'At current surface temperatures, more than 80% of the sites have no need for supplemental local home heating from subsurface thermal pollution, but at the maximum plausible surface temperature, more than 70% of sites exhibit significantly greater home heating needs.',
+    C: 'At current surface temperatures, more than 80% of sites can meet, at most, 25% of local home heating needs with subsurface thermal pollution, but at the maximum plausible surface temperature, more than 80% of sites can meet greater than 25% of local home heating needs.',
+    D: 'At current surface temperatures, more than 80% of the sites cannot use subsurface thermal pollution to meet any portion of local home heating needs, but at the maximum plausible surface temperature, that percentage drops below 20%.'
+  },
+  answer: 'D',
+  img: '228.png'
+},
+
+{
+  num: 229,
+  passage: `Although it’s clear that Mars once had liquid water on its surface, astronomers have debated whether the evidence of ancient water reflects a prolonged phase of warm, wet conditions—the so-called wet and warm scenario—or a brief period of melting in an otherwise consistently frozen environment. Researchers Benjamin T. Cardenas and Michael P. Lamb recently added to this debate by using data from NASA and the Mars Orbiter Laser Altimeter to map the topography of what is now a large basin in Mars’s northern hemisphere. Cardenas and Lamb concluded that the wet and warm scenario is likely correct.`,
+  stem: `Which finding about the basin, if true, would most directly support Cardenas and Lamb’s conclusion?`,
+  options: {
+    A: 'Its dimensions and shape indicate that it is unlikely to have formed as the result of an asteroid or comet impact.',
+    B: 'It has features suggesting that it once held an ocean that underwent gradual sea-level changes over an extended time.',
+    C: 'Its physical characteristics are most consistent with it having formed as a result of a massive but short-lived influx of liquid water.',
+    D: 'It is surrounded by channels that could have been formed either by running water or by flowing lava.'
+  },
+  answer: 'B',
+  img: null
+},
+
+{
+  num: 230,
+  passage: `The Land of Enchantment is a 1906 travel book by Lilian Whiting. In the book, which describes the experience of traveling through the southwestern United States by train, Whiting reflects on the escape from everyday life that such a journey provides: ______`,
+  stem: `Which quotation from <i>The Land of Enchantment</i> most effectively illustrates the claim?`,
+  options: {
+    A: '“The opportunities and advantages already offered and constantly increasing are greater than would at first be considered possible.”',
+    B: '“The social and the picturesque charm of the long journey is singularly enhanced by the leisurely stops made for refreshment.”',
+    C: '“The real journey begins, of course, at Chicago, and as these trains leave in the evening the traveller fares forth in the seclusion of his berth.”',
+    D: '“One experiences a certain sense of detachment from ordinary day and daylight duties that is exhilarating.”'
+  },
+  answer: 'D',
+  img: null
+},
+
+{
+  num: 231,
+  passage: `Far from being modern inventions, ______ more than 5,000 years ago.`,
+  stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  options: {
+    A: 'Sumerians in ancient Mesopotamia used drinking straws',
+    B: 'drinking straws were used by Sumerians in ancient Mesopotamia',
+    C: 'the use of drinking straws by Sumerians in ancient Mesopotamia happened',
+    D: 'ancient Mesopotamia was home to Sumerians who used drinking straws'
+  },
+  answer: 'B',
+  img: null
+},
+
+{
+  num: 232,
+  passage: `Humans were long thought to have begun occupying the Peruvian settlement of Machu Picchu between 1440 and 1450 CE. However, a team led by anthropologist Dr. Richard Burger used accelerator mass spectrometry to uncover evidence that it was occupied ______ 1420 CE, according to Burger, humans were likely inhabiting the area.`,
+  stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  options: {
+    A: 'earlier. In',
+    B: 'earlier, in',
+    C: 'earlier, which in',
+    D: 'earlier in'
+  },
+  answer: 'A',
+  img: null
+},
+
+{
+  num: 233,
+  passage: `In discussing Mary Shelley’s 1818 epistolary novel <i>Frankenstein</i>, literary theorist Gayatri Spivak directs the reader’s attention to the character of Margaret Saville. As Spivak points out, Saville is not the protagonist of Shelley’s ______ as the recipient of the letters that frame the book’s narrative, she’s the “occasion” of it.`,
+  stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  options: {
+    A: 'novel',
+    B: 'novel,',
+    C: 'novel; rather,',
+    D: 'novel, rather,'
+  },
+  answer: 'C',
+  img: null
+},
+
+{
+  num: 234,
+  passage: `In assessing the films of Japanese director Akira Kurosawa, ______ have missed his equally deep engagement with Japanese artistic traditions such as Noh theater.`,
+  stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+  options: {
+    A: 'many critics have focused on Kurosawa’s use of Western literary sources but',
+    B: 'Kurosawa’s use of Western literary sources has been the focus of many critics, who',
+    C: 'there are many critics who have focused on Kurosawa’s use of Western literary sources, but they',
+    D: 'the focus of many critics has been on Kurosawa’s use of Western literary sources; they'
+  },
+  answer: 'A',
+  img: null
+}
+
+];
+
+let currentQ = 0;
+let answerShown = false;
+let attempted = Array(questions.length).fill(false);
+let userAnswers = Array(questions.length).fill(null);
+
+function setButtonsEnabled(enabled){
+  document.getElementById('answerBtn').disabled = !enabled;
+  document.getElementById('prevBtn').disabled = !enabled;
+  document.getElementById('nextBtn').disabled = !enabled;
+  document.getElementById('reviewBtn').disabled = !enabled;
+
+  document.getElementById('answerBtn').style.opacity = enabled ? '1' : '0.6';
+  document.getElementById('prevBtn').style.opacity   = enabled ? '1' : '0.6';
+  document.getElementById('nextBtn').style.opacity   = enabled ? '1' : '0.6';
+  document.getElementById('reviewBtn').style.opacity = enabled ? '1' : '0.6';
+  document.getElementById('answerBtn').style.cursor = enabled ? 'pointer' : 'not-allowed';
+  document.getElementById('prevBtn').style.cursor   = enabled ? 'pointer' : 'not-allowed';
+  document.getElementById('nextBtn').style.cursor   = enabled ? 'pointer' : 'not-allowed';
+  document.getElementById('reviewBtn').style.cursor = enabled ? 'pointer' : 'not-allowed';
+}
+
+function loadQuestion() {
+  if (questions.length === 0) {
+    document.getElementById('passage').innerHTML =
+      'No questions added yet. Paste your first question into the questions array in the script.';
+    document.getElementById('qnumBox').innerText = '—';
+    document.getElementById('stem').innerText = '';
+    document.getElementById('options').innerHTML = '';
+    document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+    answerShown = false;
+    updateQpanel();
+    setButtonsEnabled(false);
+    return;
+  }
+
+  setButtonsEnabled(true);
+
+  const q = questions[currentQ];
+
+  // ✅ IMAGE ON TOP
+  document.getElementById('passage').innerHTML =
+    (q.img ? `<img src="${q.img}" alt="Graph" style="max-width:100%; margin-bottom:10px;"><br>` : '') + q.passage;
+
+  document.getElementById('qnumBox').innerText = `Q${q.num}`;
+  document.getElementById('stem').innerText = q.stem;
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  for (const [key, val] of Object.entries(q.options)) {
+    const lbl = document.createElement('label');
+    lbl.innerHTML = `<input type="radio" name="option" value="${key}"> ${key}. ${val}`;
+    const input = lbl.querySelector('input');
+
+    if (userAnswers[currentQ] === key) input.checked = true;
+
+    input.addEventListener('change', () => {
+      userAnswers[currentQ] = key;
+      attempted[currentQ] = true;
+      updateQpanel();
+    });
+
+    optionsDiv.appendChild(lbl);
+  }
+
+  answerShown = false;
+  document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+  updateQpanel();
+}
+
+function toggleAnswer() {
+  if (questions.length === 0) return;
+
+  const q = questions[currentQ];
+  const optionsDiv = document.getElementById('options');
+
+  if (!answerShown){
+    for (const input of optionsDiv.querySelectorAll('input')){
+      input.parentNode.classList.remove('correct','incorrect');
+      if (input.value===q.answer) input.parentNode.classList.add('correct');
+      else input.parentNode.classList.add('incorrect');
+    }
+    document.getElementById('answerBtn').innerText = 'Hide Correct Answer';
+    answerShown = true;
+  } else {
+    for (const input of optionsDiv.querySelectorAll('input')){
+      input.parentNode.classList.remove('correct','incorrect');
+    }
+    document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+    answerShown = false;
+  }
+}
+
+document.getElementById('answerBtn').addEventListener('click', toggleAnswer);
+document.getElementById('prevBtn').addEventListener('click', () => { if(currentQ>0) currentQ--; loadQuestion(); });
+document.getElementById('nextBtn').addEventListener('click', () => { if(currentQ<questions.length-1) currentQ++; loadQuestion(); });
+
+const collapsed = document.getElementById('qpanelCollapsed');
+const expanded = document.getElementById('qpanelExpanded');
+collapsed.addEventListener('click', () => { expanded.style.display = expanded.style.display==='block'?'none':'block'; });
+
+function updateQpanel(){
+  const grid = document.getElementById('qgrid');
+  grid.innerHTML = '';
+
+  questions.forEach((q,i)=>{
+    const b = document.createElement('div');
+    b.innerText = q.num;
+    b.className='qnum-box';
+    b.classList.toggle('attempted', attempted[i]);
+    b.addEventListener('click',()=>{ currentQ=i; loadQuestion(); expanded.style.display='none'; });
+    grid.appendChild(b);
+  });
+
+  document.getElementById('currentQuestionLabel').innerText =
+    `Question ${questions[currentQ].num} of ${questions.length}`;
+}
+
+loadQuestion();
+
+// Review page
+document.getElementById('reviewBtn').addEventListener('click', () => {
+  if (questions.length === 0) return;
+
+  const mainContent = document.querySelector('.container');
+  const bottomBar = document.querySelector('.bottom-bar');
+  const qpanel = document.getElementById('qpanel');
+  mainContent.style.display = 'none';
+  bottomBar.style.display = 'none';
+  qpanel.style.display = 'none';
+
+  let reviewDiv = document.getElementById('reviewPage');
+  if (!reviewDiv) {
+    reviewDiv = document.createElement('div');
+    reviewDiv.id = 'reviewPage';
+    reviewDiv.style.padding = '20px';
+    reviewDiv.style.maxWidth = '600px';
+    reviewDiv.style.margin = '0 auto';
+    document.body.appendChild(reviewDiv);
+  }
+  reviewDiv.style.display = 'block';
+  reviewDiv.innerHTML = '<h2>Review Questions</h2>';
+
+  const correctCount = userAnswers.filter((ans, idx) => ans === questions[idx].answer).length;
+  const totalCount = questions.length;
+  const scoreDiv = document.createElement('div');
+  scoreDiv.style.fontWeight = 'bold';
+  scoreDiv.style.marginBottom = '15px';
+  scoreDiv.innerText = `Score: ${correctCount} / ${totalCount}`;
+  reviewDiv.appendChild(scoreDiv);
+
+  const ul = document.createElement('ul');
+  ul.style.listStyle = 'none';
+  ul.style.padding = '0';
+  ul.style.display = 'flex';
+  ul.style.flexWrap = 'wrap';
+  ul.style.gap = '8px';
+
+  questions.forEach((q,i)=>{
+    const li = document.createElement('li');
+    li.innerText = q.num;
+    li.style.padding='8px 12px';
+    li.style.border='1px solid #333';
+    li.style.borderRadius='4px';
+    li.style.cursor='pointer';
+
+    if (userAnswers[i] === null) li.style.background = '#555';
+    else if (userAnswers[i] === q.answer) li.style.background = '#28a745';
+    else li.style.background = '#dc3545';
+    li.style.color='#fff';
+
+    li.addEventListener('click', () => {
+      currentQ = i;
+      loadQuestion();
+      reviewDiv.style.display = 'none';
+      mainContent.style.display = 'flex';
+      bottomBar.style.display = 'flex';
+      qpanel.style.display = 'block';
+    });
+
+    ul.appendChild(li);
+  });
+
+  reviewDiv.appendChild(ul);
+
+  let backBtn = document.getElementById('backToTestBtn');
+  if (!backBtn) {
+    backBtn = document.createElement('button');
+    backBtn.id = 'backToTestBtn';
+    backBtn.innerText = 'Back to Test';
+    backBtn.style.background='#556d98';
+    backBtn.style.color='#fff';
+    backBtn.style.border='none';
+    backBtn.style.padding='10px 20px';
+    backBtn.style.marginTop='20px';
+    backBtn.style.borderRadius='4px';
+    backBtn.style.cursor='pointer';
+    reviewDiv.appendChild(backBtn);
+  }
+  backBtn.onclick = () => {
+    reviewDiv.style.display = 'none';
+    mainContent.style.display = 'flex';
+    bottomBar.style.display = 'flex';
+    qpanel.style.display = 'block';
+  };
+});
+</script>
+
+</body>
+</html>
