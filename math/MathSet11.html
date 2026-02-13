@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Math – Set 11</title>
+
+<!-- MathJax (Computer Modern-like) -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(','\\)'], ['$', '$']],
+      displayMath: [['\\[','\\]']]
+    },
+    options: {
+      skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+    },
+    chtml: {
+      scale: 1.25   /* ← THIS line controls math size */
+    }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#fff; }
+
+.top-bar { padding:12px 20px; border-bottom:1px solid #ccc; font-weight:bold; }
+
+/* Container: single column layout for Math test */
+.container {
+  display:flex;
+  flex-direction:column;
+  flex-grow:1;
+  padding:20px;
+  padding-bottom:150px; /* prevents bottom bar hiding options */
+}
+
+.passage { font-size:16px; line-height:1.6; white-space:pre-wrap; margin-bottom:20px; }
+#stem { margin-bottom:6px; }
+
+/* --- FIXED QBOX SIZE WITHOUT CHANGING OTHER STYLES --- */
+.qbox {
+  display:inline-block;
+  align-self:flex-start;
+  padding:4px 8px;
+  width:auto;
+  min-width:0;
+  text-align:center;
+  border:2px solid #000;
+  border-radius:4px;
+  font-weight:bold;
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.options label { display:block; margin:10px 0; padding:6px; cursor:pointer; border-radius:4px; }
+.correct { background:#d4edda; }
+.incorrect { background:#f8d7da; }
+
+/* SPR input */
+.spr-wrap { margin-top:10px; }
+.spr-input {
+  width:220px;
+  max-width:100%;
+  padding:8px 10px;
+  font-size:16px;
+  border:1px solid #333;
+  border-radius:4px;
+}
+.spr-hint { margin-top:8px; font-size:14px; }
+
+/* Bottom bar fixed at bottom */
+.bottom-bar {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  width:100%;
+  background:#2f3e46;
+  padding:10px 20px;
+  position:fixed;
+  bottom:0; left:0;
+  box-sizing:border-box;
+  color:#fff;
+  gap:10px;
+  z-index:20;
+}
+
+button { padding:9px 20px; border:none; cursor:pointer; border-radius:4px; color:#fff; font-weight:bold; }
+.btn-answer { background:#3a5a98; }
+.btn-nav { background:#556d98; }
+
+.qpanelCollapsed {
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  padding:6px 12px;
+  cursor:pointer;
+  background:#ff6f61;
+  color:#fff;
+  border-radius:4px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  z-index:21;
+  font-size:13px;
+}
+
+.qpanelExpanded {
+  display:none;
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px;
+  border-radius:6px;
+  background:#1a1a1a;
+  color:#fff;
+  max-width:800px;
+  overflow-y:auto;
+  font-size:14px;
+  text-align:center;
+  z-index:20;
+  max-height:300px;
+}
+
+.qgrid { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; justify-content:center; margin-top:5px; }
+.qnum-box { padding:8px; text-align:center; cursor:pointer; border-radius:4px; background:#333; color:#fff; font-weight:bold; }
+.qnum-box.attempted { background:#ff6f61; color:#fff; }
+.qnum-box:hover { opacity:0.8; }
+
+/* MOBILE FRIENDLY */
+@media (max-width: 768px) {
+  .passage { font-size:15px; margin-bottom:15px; }
+  #stem { font-size:15px; margin-bottom:10px; }
+  #options label { font-size:14px; }
+  .bottom-bar { flex-direction:column; gap:8px; }
+  .btn-answer, .btn-nav { width:100%; text-align:center; }
+  .qpanelCollapsed { font-size:12px; padding:5px 10px; }
+  .qpanelExpanded { max-height:250px; font-size:13px; padding:8px; }
+  .qgrid { grid-template-columns:repeat(4,1fr); gap:4px; }
+  .qnum-box { padding:6px; font-size:12px; }
+  img { max-width:100%; height:auto; }
+  .container { padding-bottom:190px; }
+}
+
+@media only screen and (max-width: 600px) {
+  .bottom-bar { flex-direction:column; align-items:stretch; gap:8px; }
+  #qpanelCollapsed { left:10px; bottom:80px; transform:none; font-size:12px; }
+  #qpanelExpanded { left:10px; bottom:120px; transform:none; max-width:calc(100% - 20px); font-size:13px; max-height:250px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Calculator button -->
+<button id="openCalculator"
+        style="position:absolute; top:10px; right:10px;
+               padding:6px 12px; font-size:14px; border-radius:4px;
+               border:1px solid #0077cc; background:#fff; color:#0077cc;
+               cursor:pointer; z-index:30;">
+  Calculator
+</button>
+
+<div class="top-bar">Math – Set 11</div>
+
+<div class="container">
+  <div id="qnumBox" class="qbox"></div>
+  <div id="passage" class="passage"></div>
+  <div id="stem"></div>
+  <div id="options" class="options"></div>
+</div>
+
+<div class="bottom-bar">
+  <button id="answerBtn" class="btn-answer">Show Correct Answer</button>
+  <button id="prevBtn" class="btn-nav">Previous</button>
+  <button id="nextBtn" class="btn-nav">Next</button>
+  <button id="reviewBtn" class="btn-nav" style="background:#28a745;">Go to Review</button>
+</div>
+
+<div id="qpanel">
+  <div id="qpanelCollapsed" class="qpanelCollapsed">
+    <span id="currentQuestionLabel">Question</span>
+    <span id="toggleArrow" style="margin-left:6px;">▲</span>
+  </div>
+  <div id="qpanelExpanded" class="qpanelExpanded">
+    <div id="qgrid" class="qgrid"></div>
+  </div>
+</div>
+
+<script>
+document.getElementById('openCalculator').addEventListener('click', function() {
+  window.open(
+    'https://www.desmos.com/testing/collegeboard/graphing',
+    'CalculatorWindow',
+    'width=900,height=600,top=100,left=100,resizable=yes,scrollbars=yes'
+  );
+});
+
+/* ✅ Important: typeset NEWLY inserted LaTeX every time */
+function typesetMath() {
+  if (window.MathJax && MathJax.typesetPromise) {
+    const nodes = [
+      document.getElementById('passage'),
+      document.getElementById('options'),
+      document.getElementById('stem')
+    ];
+    MathJax.typesetClear(nodes);
+    MathJax.typesetPromise(nodes);
+  }
+}
+
+// ===== SAT-Style Numeric Normalizer (for SPR equivalence) =====
+function toNumber(value) {
+  if (value == null) return null;
+
+  let s = value.toString().trim();
+
+  // Remove spaces
+  s = s.replace(/\s+/g, "");
+
+  // Normalize unicode minus (just in case)
+  s = s.replace(/\u2212/g, "-");
+
+  // Handle fraction like 27/50 or 16/17 (also allows decimals in numerator/denominator)
+  const fractionMatch = s.match(/^(-?\d+(\.\d+)?)\/(-?\d+(\.\d+)?)$/);
+  if (fractionMatch) {
+    const numerator = parseFloat(fractionMatch[1]);
+    const denominator = parseFloat(fractionMatch[3]);
+    if (denominator !== 0) return numerator / denominator;
+  }
+
+  // Handle decimals (.54, 0.54, 5, -3.2 etc.)
+  const num = parseFloat(s);
+  return isNaN(num) ? null : num;
+}
+
+function numbersEqual(a, b, tolerance = 0.0001) {
+  if (a == null || b == null) return false;
+  return Math.abs(a - b) < tolerance;
+}
+
+function isCorrectAnswer(idx, givenRaw) {
+  const q = questions[idx];
+  const correct = q.answer;
+
+  const givenStr = (givenRaw ?? "").toString().trim();
+  if (!givenStr) return false;
+
+  // MCQ: exact letter match
+  if (q.options) {
+    return givenStr === (correct ?? "").toString().trim();
+  }
+
+  // SPR: numeric equivalence
+  const givenNum = toNumber(givenStr);
+
+  if (Array.isArray(correct)) {
+    return correct.some(c => numbersEqual(toNumber(c), givenNum));
+  }
+  return numbersEqual(toNumber(correct), givenNum);
+}
+
+// ==== QUESTIONS (Set 11: 315–330) ====
+const questions = [
+
+  {
+    num: 315,
+    passage: `
+      Circle A has equation \\( (x - 7)^2 + (y + 3)^2 = 1 \\).
+      In the \\(xy\\)-plane, circle B is obtained by translating circle A
+      to the right 4 units. Which equation represents circle B?
+    `,
+    stem: "",
+    options: {
+      A: "\\( (x - 7)^2 + (y + 7)^2 = 1 \\)",
+      B: "\\( (x - 3)^2 + (y + 3)^2 = 1 \\)",
+      C: "\\( (x - 11)^2 + (y + 3)^2 = 1 \\)",
+      D: "\\( (x - 7)^2 + (y - 1)^2 = 1 \\)"
+    },
+    answer: "C",
+    img: null
+  },
+
+  {
+    num: 316,
+    passage: `
+      In the figure above, \\( \\tan B = \\frac{3}{4} \\).
+      If \\(BC = 15\\) and \\(DA = 4\\), what is the length of \\(\\overline{DE}\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "6",
+    img: "316.png"
+  },
+
+  {
+    num: 317,
+    passage: `
+      The expression \\( (3x - 23)(19x + 6) \\) is equivalent to
+      the expression \\( ax^2 + bx + c \\), where \\(a\\), \\(b\\), and \\(c\\)
+      are constants. What is the value of \\(b\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "-419",
+    img: null
+  },
+
+  {
+    num: 318,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\( (x - 47)^2 = 1 \\)
+      </div>
+      What is the sum of the solutions to the given equation?
+    `,
+    stem: "",
+    options: null,
+    answer: "94",
+    img: null
+  },
+
+ {
+  num: 319,
+  passage: `
+    A trivia tournament organizer wanted to study the relationship between the number of points a team scores in a trivia round and the number of hours that a team practices each week. For the study, the organizer selected 55 teams at random from all trivia teams in a certain tournament. The table displays the information for the 40 teams in the sample that practiced for at least 3 hours per week.
+    
+    <img src="319.png" alt="Table for Question 319"
+         style="max-width:600px; width:100%; height:auto; display:block; margin:12px 0;">
+    
+    Which of the following is the largest population to which the results of the study can be generalized?
+  `,
+  stem: "",
+  options: {
+    A: "All trivia teams in the tournament that scored 14 or more points in the round",
+    B: "The 55 trivia teams in the sample",
+    C: "The 40 trivia teams in the sample that practiced for at least 3 hours per week",
+    D: "All trivia teams in the tournament"
+  },
+  answer: "D",
+  img: null
+},
+
+
+ {
+  num: 320,
+  passage: `
+    On May 10, 2015, there were 83 million Internet subscribers in Nigeria. The major Internet providers were MTN, Globacom, Airtel, Etisalat, and Visafone. By September 30, 2015, the number of Internet subscribers in Nigeria had increased to 97 million. If an Internet subscriber in Nigeria on September 30, 2015, is selected at random, the probability that the person selected was an MTN subscriber is 0.43. There were \\(p\\) million MTN subscribers in Nigeria on September 30, 2015. To the nearest integer, what is the value of \\(p\\)?
+  `,
+  stem: "",
+  options: null,
+  answer: "42",
+  img: null
+},
+
+
+
+ {
+  num: 321,
+  passage: `
+    During a month, Morgan ran \\(r\\) miles at 5 miles per hour and biked \\(b\\) miles at 10 miles per hour. She ran and biked a total of 200 miles that month, and she biked for twice as many hours as she ran. What is the total number of miles that Morgan biked during the month?
+  `,
+  stem: "",
+  options: {
+    A: "80",
+    B: "100",
+    C: "120",
+    D: "160"
+  },
+  answer: "D",
+  img: null
+},
+
+
+  {
+    num: 322,
+    passage: `
+      A number \\(x\\) is at most 2 less than 3 times the value of \\(y\\).
+      If the value of \\(y\\) is \\(-4\\), what is the greatest possible value of \\(x\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "-14",
+    img: null
+  },
+
+  {
+    num: 323,
+    passage: `
+      In the \\(xy\\)-plane, line \\(k\\) has a slope of 5 and a y-intercept of \\((0, -35)\\).
+      What is the x-coordinate of the x-intercept of line \\(k\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "7",
+    img: null
+  },
+
+  {
+  num: 324,
+  passage: `
+    <div style="font-size:18px; font-weight:bold; margin-bottom:10px;">
+      \\( x + 5y = 5 \\)<br>
+      \\( 2x - y = -4 \\)
+    </div>
+    Which of the following graphs in the \\(xy\\)-plane could be used to solve the system of equations above?
+   <img src="324.png"
+     style="max-width:400px; width:100%; height:auto; display:block; margin:12px auto;">
+
+  `,
+  stem: "",
+  options: {
+    A: "",
+    B: "",
+    C: "",
+    D: ""
+  },
+  answer: "C",
+  img: null
+},
+
+
+  {
+    num: 325,
+    passage: `
+      The number of radians in a 720-degree angle can be written as \\(a\\pi\\),
+      where \\(a\\) is a constant. What is the value of \\(a\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "4",
+    img: null
+  },
+
+  {
+    num: 326,
+    passage: `
+      For the triangle shown, which expression represents the value of \\(a\\)?
+    `,
+    stem: "",
+    options: {
+      A: "\\( \\sqrt{21^2 - 6^2} \\)",
+      B: "\\( 21^2 - 6^2 \\)",
+      C: "\\( \\sqrt{21 - 6} \\)",
+      D: "\\( 21 - 6 \\)"
+    },
+    answer: "A",
+    img: "326.png"
+  },
+
+ {
+  num: 327,
+  passage: `
+    A sample consisting of 720 adults who own televisions was selected at random for a study. Based on the sample, it is estimated that 32% of all adults who own televisions use their televisions to watch nature shows, with an associated margin of error of 3.41%. Which of the following is the most plausible conclusion about all adults who own televisions?
+  `,
+  stem: "",
+  options: {
+    A: "More than 35.41% of all adults who own televisions use their televisions to watch nature shows.",
+    B: "Between 28.59% and 35.41% of all adults who own televisions use their televisions to watch nature shows.",
+    C: "Since the sample included adults who own televisions and not just those who use their televisions to watch nature shows, no conclusion can be made.",
+    D: "Since the sample did not include all the people who watch nature shows, no conclusion can be made."
+  },
+  answer: "B",
+  img: null
+},
+
+
+{
+  num: 328,
+  passage: `
+    <img src="328.png"
+         style="max-width:650px; width:100%; height:auto; display:block; margin:16px auto;">
+
+    At \\(x = 25.5\\), which of the following is closest to the y-value predicted by the line of best fit?
+  `,
+  stem: "",
+  options: {
+    A: "6.2",
+    B: "7.3",
+    C: "8.2",
+    D: "9.1"
+  },
+  answer: "C",
+  img: null
+},
+
+  {
+    num: 329,
+    passage: `
+      If \\(x^2 = a + b\\) and \\(y^2 = a + c\\), which of the following is equal to
+      \\( (x^2 - y^2)^2 \\) ?
+    `,
+    stem: "",
+    options: {
+      A: "\\( a^2 - 2ac + c^2 \\)",
+      B: "\\( b^2 - 2bc + c^2 \\)",
+      C: "\\( 4a^2 - 4abc + c^2 \\)",
+      D: "\\( 4a^2 - 2abc + b^2c^2 \\)"
+    },
+    answer: "B",
+    img: null
+  },
+
+  {
+    num: 330,
+    passage: `
+      For the given function \\( f(x) = x^5 + 9x + 17 \\),
+      the graph of \\(y = f(x)\\) in the \\(xy\\)-plane passes through
+      the point \\((0, b)\\), where \\(b\\) is a constant.
+      What is the value of \\(b\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "17",
+    img: null
+  }
+
+];
+
+// ==== EXISTING LOGIC ====
+let currentQ = 0;
+let answerShown = false;
+let attempted = Array(questions.length).fill(false);
+let userAnswers = Array(questions.length).fill(null);
+
+function loadQuestion() {
+  const q = questions[currentQ];
+
+  // passage + optional image
+  if (q.img) {
+    document.getElementById('passage').innerHTML = `
+      <img src="${q.img}" alt="Question Image"
+          style="max-width:420px; width:100%; height:auto; display:block; margin:12px auto;"
+>
+      ${q.passage}
+    `;
+  } else {
+    document.getElementById('passage').innerHTML = q.passage;
+  }
+
+  document.getElementById('qnumBox').innerText = `Q${q.num}`;
+  document.getElementById('stem').innerText = q.stem || "";
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  // MCQ
+  if (q.options) {
+    for (const [key, val] of Object.entries(q.options)) {
+      const lbl = document.createElement('label');
+      lbl.innerHTML = `<input type="radio" name="option" value="${key}"> ${key}. ${val}`;
+      const input = lbl.querySelector('input');
+
+      if (userAnswers[currentQ] === key) input.checked = true;
+
+      input.addEventListener('change', () => {
+        userAnswers[currentQ] = key;
+        attempted[currentQ] = true;
+        updateQpanel();
+      });
+
+      optionsDiv.appendChild(lbl);
+    }
+  } else {
+    // SPR (student-produced response)
+    const wrap = document.createElement('div');
+    wrap.className = 'spr-wrap';
+    wrap.innerHTML = `
+      <input id="sprInput" class="spr-input" type="text" inputmode="decimal" />
+      <div id="sprAnswerReveal" class="spr-hint"></div>
+    `;
+    optionsDiv.appendChild(wrap);
+
+    const sprInput = document.getElementById('sprInput');
+    if (userAnswers[currentQ] !== null) sprInput.value = userAnswers[currentQ];
+
+    sprInput.addEventListener('input', () => {
+      userAnswers[currentQ] = sprInput.value.trim();
+      attempted[currentQ] = userAnswers[currentQ].length > 0;
+      updateQpanel();
+    });
+  }
+
+  answerShown = false;
+  document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+  updateQpanel();
+
+  // ✅ re-typeset LaTeX after injecting HTML
+  typesetMath();
+}
+
+function toggleAnswer() {
+  const q = questions[currentQ];
+  const optionsDiv = document.getElementById('options');
+
+  if (!answerShown) {
+    // MCQ highlighting
+    if (q.options) {
+      for (const input of optionsDiv.querySelectorAll('input[type="radio"]')) {
+        input.parentNode.classList.remove('correct','incorrect');
+        if (input.value === q.answer) input.parentNode.classList.add('correct');
+        else input.parentNode.classList.add('incorrect');
+      }
+    } else {
+      // SPR reveal
+      const reveal = document.getElementById('sprAnswerReveal');
+      if (reveal) {
+        const ans = Array.isArray(q.answer) ? q.answer.join(" or ") : q.answer;
+        reveal.innerHTML = `<strong>Correct Answer:</strong> ${ans}`;
+      }
+    }
+
+    document.getElementById('answerBtn').innerText = 'Hide Correct Answer';
+    answerShown = true;
+  } else {
+    // remove highlights / hide reveal
+    if (q.options) {
+      for (const input of optionsDiv.querySelectorAll('input[type="radio"]')) {
+        input.parentNode.classList.remove('correct','incorrect');
+      }
+    } else {
+      const reveal = document.getElementById('sprAnswerReveal');
+      if (reveal) reveal.innerHTML = '';
+    }
+
+    document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+    answerShown = false;
+  }
+}
+
+document.getElementById('answerBtn').addEventListener('click', toggleAnswer);
+document.getElementById('prevBtn').addEventListener('click', () => { if (currentQ > 0) currentQ--; loadQuestion(); });
+document.getElementById('nextBtn').addEventListener('click', () => { if (currentQ < questions.length - 1) currentQ++; loadQuestion(); });
+
+const collapsed = document.getElementById('qpanelCollapsed');
+const expanded = document.getElementById('qpanelExpanded');
+collapsed.addEventListener('click', () => {
+  expanded.style.display = (expanded.style.display === 'block') ? 'none' : 'block';
+});
+
+function updateQpanel() {
+  const grid = document.getElementById('qgrid');
+  grid.innerHTML = '';
+  questions.forEach((q, i) => {
+    const b = document.createElement('div');
+    b.innerText = q.num;
+    b.className = 'qnum-box';
+    b.classList.toggle('attempted', attempted[i]);
+    b.addEventListener('click', () => { currentQ = i; loadQuestion(); expanded.style.display = 'none'; });
+    grid.appendChild(b);
+  });
+  document.getElementById('currentQuestionLabel').innerText =
+    `Question ${questions[currentQ].num} of ${questions.length}`;
+}
+
+loadQuestion();
+
+// ==== REVIEW PAGE LOGIC ====
+document.getElementById('reviewBtn').addEventListener('click', () => {
+  const mainContent = document.querySelector('.container');
+  const bottomBar = document.querySelector('.bottom-bar');
+  const qpanel = document.getElementById('qpanel');
+
+  mainContent.style.display = 'none';
+  bottomBar.style.display = 'none';
+  qpanel.style.display = 'none';
+
+  let reviewDiv = document.getElementById('reviewPage');
+  if (!reviewDiv) {
+    reviewDiv = document.createElement('div');
+    reviewDiv.id = 'reviewPage';
+    reviewDiv.style.padding = '20px';
+    reviewDiv.style.maxWidth = '600px';
+    reviewDiv.style.margin = '0 auto';
+    document.body.appendChild(reviewDiv);
+  }
+  reviewDiv.style.display = 'block';
+  reviewDiv.innerHTML = '<h2>Review Questions</h2>';
+
+  // ✅ Score: MCQ exact match; SPR numeric equivalence (fraction/decimal accepted)
+  const correctCount = userAnswers.filter((ans, idx) => isCorrectAnswer(idx, ans)).length;
+  const totalCount = questions.length;
+
+  const scoreDiv = document.createElement('div');
+  scoreDiv.style.fontWeight = 'bold';
+  scoreDiv.style.marginBottom = '15px';
+  scoreDiv.innerText = `Score: ${correctCount} / ${totalCount}`;
+  reviewDiv.appendChild(scoreDiv);
+
+  const ul = document.createElement('ul');
+  ul.style.listStyle = 'none';
+  ul.style.padding = '0';
+  ul.style.display = 'flex';
+  ul.style.flexWrap = 'wrap';
+  ul.style.gap = '8px';
+
+  questions.forEach((q, i) => {
+    const li = document.createElement('li');
+    li.innerText = q.num;
+    li.style.padding = '8px 12px';
+    li.style.border = '1px solid #333';
+    li.style.borderRadius = '4px';
+    li.style.cursor = 'pointer';
+
+    const given = (userAnswers[i] ?? "").toString().trim();
+
+    if (!given) li.style.background = '#555';
+    else if (isCorrectAnswer(i, given)) li.style.background = '#28a745';
+    else li.style.background = '#dc3545';
+
+    li.style.color = '#fff';
+
+    li.addEventListener('click', () => {
+      currentQ = i;
+      loadQuestion();
+      reviewDiv.style.display = 'none';
+      mainContent.style.display = 'flex';
+      bottomBar.style.display = 'flex';
+      qpanel.style.display = 'block';
+    });
+
+    ul.appendChild(li);
+  });
+
+  reviewDiv.appendChild(ul);
+
+  let backBtn = document.getElementById('backToTestBtn');
+  if (!backBtn) {
+    backBtn = document.createElement('button');
+    backBtn.id = 'backToTestBtn';
+    backBtn.innerText = 'Back to Test';
+    backBtn.style.background = '#556d98';
+    backBtn.style.color = '#fff';
+    backBtn.style.border = 'none';
+    backBtn.style.padding = '10px 20px';
+    backBtn.style.marginTop = '20px';
+    backBtn.style.borderRadius = '4px';
+    backBtn.style.cursor = 'pointer';
+    reviewDiv.appendChild(backBtn);
+  }
+  backBtn.onclick = () => {
+    reviewDiv.style.display = 'none';
+    mainContent.style.display = 'flex';
+    bottomBar.style.display = 'flex';
+    qpanel.style.display = 'block';
+  };
+
+  // (Optional) typeset any math on review page (score only here, but safe)
+  typesetMath();
+});
+</script>
+
+</body>
+</html>
